@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  app:
+    platform: "linux/amd64"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /app
+    volumes:
+      - chatgpt-personal-assistant-db:/app/data/db.sqlite
+    ports:
+      - "8080:3000"
+    image: chatgpt-personal-assistant
+
+volumes:
+  chatgpt-personal-assistant-db:
