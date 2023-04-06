@@ -169,11 +169,7 @@ const Sidebar: React.FC = () => {
         styles={{ rightSection: { pointerEvents: "none" } }}
         mb="sm"
       /> */}
-      <Navbar.Section
-        className={classes.section}
-        grow
-        component={ScrollArea.Autosize}
-      >
+      <Navbar.Section className={classes.section} grow component={ScrollArea}>
         <Group className={classes.collectionsHeader} position="apart">
           <Text weight={500} color="dimmed">
             Chats
