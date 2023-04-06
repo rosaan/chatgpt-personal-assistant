@@ -29,13 +29,13 @@ docker pull rosaan/chatgpt-personal-assistant:latest
 docker volume create chatgpt-personal-assistant-db
 ```
 
-3. Run the Docker container:
+4. Run the Docker container:
 
 ```bash
 docker run -d -p 8080:3000 --name chatgpt-personal-assistant -v chatgpt-personal-assistant-db:/app/data rosaan/chatgpt-personal-assistant:latest
 ```
 
-4. Access the ChatGPT Personal Assistant UI in your web browser by navigating to `http://localhost:8080`.
+5. Access the ChatGPT Personal Assistant UI in your web browser by navigating to `http://localhost:8080`.
 
 ### Manual Installation
 
