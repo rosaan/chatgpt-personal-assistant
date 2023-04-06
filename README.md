@@ -23,10 +23,16 @@ ChatGPT Personal Assistant is a user-friendly interface for OpenAI's GPT-powered
 docker pull rosaan/chatgpt-personal-assistant:latest
 ```
 
+3. Create a persistent volume for the SQLite database:
+
+```bash
+docker volume create chatgpt-personal-assistant-db
+```
+
 3. Run the Docker container:
 
 ```bash
-docker run -d -p 8080:3000 --name chatgpt-personal-assistant -v chatgpt-personal-assistant-db:/app/data/db.sqlite rosaan/chatgpt-personal-assistant:latest
+docker run -d -p 8080:3000 --name chatgpt-personal-assistant -v chatgpt-personal-assistant-db:/app/data rosaan/chatgpt-personal-assistant:latest
 ```
 
 4. Access the ChatGPT Personal Assistant UI in your web browser by navigating to `http://localhost:8080`.
