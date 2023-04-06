@@ -6,7 +6,11 @@ import { api } from "@/utils/api";
 import { type FormEvent } from "react";
 
 const QuickChat = () => {
-  const messages = api.gpt.listQuickMessage.useQuery();
+  const messages = api.gpt.listQuickMessage.useQuery(void null, {
+    onError: errorHandler,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
 
   const chatCompletion = api.gpt.quickMessageChatCompletion.useMutation({
     onError: errorHandler,
@@ -42,8 +46,6 @@ const QuickChat = () => {
       chatCompletionMsgs?.forEach((m) => {
         messages.data?.push(m);
       });
-
-      e.currentTarget.reset();
     } catch (err) {
       console.error(err);
     }

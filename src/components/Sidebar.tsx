@@ -12,6 +12,7 @@ import {
   useMantineTheme,
   Drawer,
   Menu,
+  LoadingOverlay,
 } from "@mantine/core";
 import {
   IconPlus,
@@ -43,11 +44,12 @@ const Sidebar: React.FC = () => {
   const [drawerOpened, { open: openDrawer, close: closeDrawer }] =
     useDisclosure(false);
 
-  const chats = api.gpt.listChat.useQuery();
+  const chats = api.gpt.listChat.useQuery(void null, {
+    onError: errorHandler,
+    refetchOnWindowFocus: false,
+  });
 
   const router = useRouter();
-
-  router.events.on("routeChangeComplete", () => void chats.refetch());
 
   const theme = useMantineTheme();
 
@@ -62,7 +64,11 @@ const Sidebar: React.FC = () => {
     onError: errorHandler,
   });
 
-  const models = api.gpt.listModels.useQuery();
+  const models = api.gpt.listModels.useQuery(void null, {
+    onError: errorHandler,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
 
   const confirmDelete = (chat: Chat) =>
     modals.openConfirmModal({
@@ -206,6 +212,7 @@ const Sidebar: React.FC = () => {
         </div>
       </Navbar.Section>
       <Navbar.Section className={classes.section}>
+        <LoadingOverlay visible={chats.isLoading} overlayBlur={2} />
         <div className={classes.mainLinks}>{mainLinks}</div>
       </Navbar.Section>
 

@@ -1,6 +1,6 @@
 ##### DEPENDENCIES
 
-FROM --platform=linux/amd64 node:16-alpine3.17 AS deps
+FROM node:19-alpine3.17 AS deps
 RUN apk add --no-cache libc6-compat openssl1.1-compat
 WORKDIR /app
 
@@ -21,7 +21,7 @@ RUN \
 
 ##### BUILDER
 
-FROM --platform=linux/amd64 node:16-alpine3.17 AS builder
+FROM node:19-alpine3.17 AS builder
 ENV NODE_ENV production
 ENV DATABASE_URL "file:/app/data/db.sqlite"
 ENV NEXTAUTH_URL "http://localhost:8080"
@@ -44,7 +44,7 @@ RUN pnpm postinstall && pnpm migrate
 
 ##### RUNNER
 
-FROM --platform=linux/amd64 node:16-alpine3.17 AS runner
+FROM node:19-alpine3.17 AS runner
 WORKDIR /app
 
 ENV NODE_ENV production

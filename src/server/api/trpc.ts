@@ -34,15 +34,27 @@ type CreateContextOptions = {
  *
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
+
 const createInnerTRPCContext = async (opts: CreateContextOptions) => {
-  const setting = await prisma.setting.findUnique({
-    where: { key: SettingKey.OPENAI_API_KEY },
-  });
+  const api_key =
+    process.env.OPENAI_API_KEY === "undefined"
+      ? ""
+      : process.env.OPENAI_API_KEY;
+  if (!api_key) {
+    await prisma.setting
+      .findUnique({
+        where: { key: SettingKey.OPENAI_API_KEY },
+      })
+      .then((setting) => (process.env.OPENAI_API_KEY = setting?.value))
+      .catch(() => {
+        throw new Error("OpenAI API Key is empty");
+      });
+  }
 
   return {
     session: opts.session,
     prisma,
-    openai: new OpenAI(setting?.value),
+    openai: new OpenAI(process.env.OPENAI_API_KEY),
   };
 };
 

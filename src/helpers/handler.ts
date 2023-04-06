@@ -8,7 +8,7 @@ export const errorHandler = (error: any) => {
   if (!error) return;
   const message = (): string => {
     if (error?.message?.includes("401")) {
-      return "Access Unauthorized";
+      return "Invalid OpenAI API key";
     }
     return error?.message || "Something went wrong";
   };

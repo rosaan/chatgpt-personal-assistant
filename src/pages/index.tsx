@@ -8,7 +8,11 @@ import { errorHandler } from "@/helpers/handler";
 import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
-  const models = api.gpt.listModels.useQuery();
+  const models = api.gpt.listModels.useQuery(void null, {
+    onError: errorHandler,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
   const router = useRouter();
 
   const createChat = api.gpt.createChat.useMutation({

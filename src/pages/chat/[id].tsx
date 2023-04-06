@@ -24,6 +24,8 @@ const ChatID: NextPage = () => {
           await router.push("/");
         }
       },
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
     }
   );
 
@@ -39,11 +41,14 @@ const ChatID: NextPage = () => {
       chatId: id as string,
     },
     {
+      onError: errorHandler,
       onSuccess: async (data) => {
         if (!data) {
           await router.push("/");
         }
       },
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
     }
   );
 
@@ -68,8 +73,6 @@ const ChatID: NextPage = () => {
       chatCompletionMsgs?.forEach((m) => {
         messages.data?.push(m);
       });
-
-      e.currentTarget.reset();
     } catch (err) {
       console.error(err);
     }

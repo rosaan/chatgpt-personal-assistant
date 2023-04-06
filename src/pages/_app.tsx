@@ -9,7 +9,6 @@ import {
 } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { ModalsProvider } from "@mantine/modals";
-import { Provider } from "jotai";
 
 import { api } from "@/utils/api";
 
@@ -18,6 +17,7 @@ import Head from "next/head";
 import { useState } from "react";
 import { SettingKey } from "@/constants/enum";
 import OpenAIToken from "@/components/OpenAIToken";
+import { errorHandler } from "@/helpers/handler";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -30,9 +30,16 @@ const MyApp: AppType<{ session: Session | null }> = ({
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
 
-  const fetchSettings = api.setting.getKey.useQuery({
-    key: SettingKey.OPENAI_API_KEY,
-  });
+  const fetchSettings = api.setting.getKey.useQuery(
+    {
+      key: SettingKey.OPENAI_API_KEY,
+    },
+    {
+      onError: errorHandler,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+    }
+  );
 
   return (
     <>
@@ -44,33 +51,31 @@ const MyApp: AppType<{ session: Session | null }> = ({
         />
         <link rel="icon" href="/_next/image?url=%2Fopenai.png&w=96&q=75" />
       </Head>
-      <Provider>
-        <ColorSchemeProvider
-          colorScheme={colorScheme}
-          toggleColorScheme={toggleColorScheme}
+      <ColorSchemeProvider
+        colorScheme={colorScheme}
+        toggleColorScheme={toggleColorScheme}
+      >
+        <MantineProvider
+          theme={{ colorScheme }}
+          withGlobalStyles
+          withNormalizeCSS
         >
-          <MantineProvider
-            theme={{ colorScheme }}
-            withGlobalStyles
-            withNormalizeCSS
-          >
-            <Notifications position="top-right" zIndex={2077} />
-            <ModalsProvider>
-              {/* <SessionProvider session={session}> */}
-              {fetchSettings.isLoading && (
-                <div className="flex h-screen w-screen items-center justify-center">
-                  <Loader size="lg" />
-                </div>
-              )}
-              {!fetchSettings.isLoading && !fetchSettings.data?.key && (
-                <OpenAIToken />
-              )}
-              {fetchSettings.data?.key && <Component {...pageProps} />}
-              {/* </SessionProvider> */}
-            </ModalsProvider>
-          </MantineProvider>
-        </ColorSchemeProvider>
-      </Provider>
+          <Notifications position="top-right" zIndex={2077} />
+          <ModalsProvider>
+            {/* <SessionProvider session={session}> */}
+            {fetchSettings.isLoading && (
+              <div className="flex h-screen w-screen items-center justify-center">
+                <Loader size="lg" />
+              </div>
+            )}
+            {!fetchSettings.isLoading && !fetchSettings.data?.key && (
+              <OpenAIToken />
+            )}
+            {fetchSettings.data?.key && <Component {...pageProps} />}
+            {/* </SessionProvider> */}
+          </ModalsProvider>
+        </MantineProvider>
+      </ColorSchemeProvider>
     </>
   );
 };

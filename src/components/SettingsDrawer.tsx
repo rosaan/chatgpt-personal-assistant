@@ -5,7 +5,7 @@ import { Button, Drawer, Group, ScrollArea, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconEye } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
   opened: boolean;
@@ -20,7 +20,7 @@ const SettingsDrawer = ({ opened, close }: Props) => {
     },
   });
 
-  api.setting.getKey.useQuery(
+  const key = api.setting.getKey.useQuery(
     {
       key: SettingKey.OPENAI_API_KEY,
     },
@@ -28,8 +28,15 @@ const SettingsDrawer = ({ opened, close }: Props) => {
       onSuccess: (data) => {
         form.setFieldValue(SettingKey.OPENAI_API_KEY, data?.value || "");
       },
+      onError: errorHandler,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
     }
   );
+
+  useEffect(() => {
+    if (opened) void key.refetch();
+  }, [opened]);
 
   const mutateKey = api.setting.updateKey.useMutation({
     onError: errorHandler,
@@ -45,6 +52,7 @@ const SettingsDrawer = ({ opened, close }: Props) => {
     >
       <form
         onSubmit={form.onSubmit((values) => {
+          console.log(values);
           void mutateKey
             .mutateAsync({
               key: SettingKey.OPENAI_API_KEY,
